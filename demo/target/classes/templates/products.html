@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Product</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<style>
+    table{
+        border-collapse: collapse; 
+        width: 80%; 
+        margin: auto;
+        border: 2px solid rgb(80, 156, 80); 
+    }
+    td{
+        padding: 10px;
+    }
+    th{
+        text-align: center;
+    }
+</style>
+<body>
+    <h1 class="text-center">Add Product</h1>
+
+    <div class="row">
+        <div class="formdiv col">
+            <!-- Form to add a new product -->
+            <form id="productForm" class="container" method="post" style="padding: 15px; border: 2px solid #63d357; width: 50%;" novalidate>
+                <div class="user-input   mb-3 ">
+                    <label>Product Name: </label><br>
+                    <input type="text" class="form-control" id="prName" name="prName" pattern="^[a-zA-Z\\s]*$" required/><br/>
+                </div>
+                <div class=" mb-3">
+                    <label class="">Product Price:</label><br>
+                    <input type="text" class="form-control " id="prPrice" name="prPrice" required /><br/>
+                </div>
+                
+                <button type="submit" class="btn btn-success">Add Product</button>
+            </form>
+        </div>
+
+
+        <div class="formdiv col">
+            <!-- Form to add a new product -->
+            <form id="up_productForm" class="container"  style="padding: 15px; border: 2px solid #63d357; width: 50%;">
+                <div class="user-input   mb-3 ">
+                     <input type="text" class="form-control" id="up_prId" name="prId" readonly/>
+
+                    <label>Product Name: </label><br>
+                    <input type="text" class="form-control" id="up_prName" name="prName" /><br/>
+                </div>
+                <div class=" mb-3">
+                    <label class="">Product Price:</label><br>
+                    <input type="text" class="form-control " id="up_prPrice" name="prPrice" /><br/>
+                </div>
+                
+                <button type="submit" class="btn btn-warning">Update Product</button>
+            </form>
+        </div>
+    </div>
+    <h3 class="text-center mt-3">Product List</h3>
+    
+    <!-- Table to display products -->
+    <table border="1" class="table-bordered" >
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Product Name</th>
+                <th>Product Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="productTableBody">
+            <!-- Products will be dynamically added here -->
+        </tbody>
+    </table>
+    
+    <script>
+
+         // Using fetch to get data from Spring Boot REST API
+        // Function to fetch data from the API
+        async function fetchProducts() {
+            try {
+                // Fetch products from the API
+                const response = await fetch('/api/viewproducts');
+                const products = await response.json(); // Parse the JSON response
+                
+                // Get the table body to dynamically populate rows
+                const tableBody = document.getElementById('productTableBody');
+                tableBody.innerHTML = ''; // Clear existing table rows before adding new ones
+    
+                // Loop through products and append rows to the table
+                products.forEach(product => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="text-center">${product.prId}</td>
+                        <td class="text-left">${product.prName}</td>
+                        <td class="text-center">${product.prPrice}</td>
+                        <td  class="text-center">
+                            <!-- Edit and Delete actions -->
+                            <button type="button"  onclick="editProduct(${product.prId})" class="btn btn-sm btn-success">Edit</button>
+                            <button type="button"  onclick="deleteProduct(${product.prId})"  class="btn btn-sm  btn-danger">Delete</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row); // Add the row to the table
+                });
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        }
+    
+        // Fetch products when the page loads
+        window.onload = fetchProducts;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ document.getElementById("productForm").addEventListener("submit", function(event){
+    event.preventDefault(); // Stop normal form submit
+
+    const productData = {
+       
+        prName: document.getElementById("prName").value,
+        prPrice: document.getElementById("prPrice").value
+    };
+
+    console.log(name);
+
+    fetch('/api/addproduct', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productData),
+    })
+    .then(response => response.text())
+    .then(data => {
+        // alert(data); // show success message
+        document.getElementById("productForm").reset(); // clear form
+        fetchProducts();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error adding product');
+    });
+});
+
+
+
+
+document.getElementById("up_productForm").addEventListener("submit", function(event){
+    event.preventDefault(); // Stop normal form submit
+
+    const productData = {
+        prId: document.getElementById("up_prId").value,
+        prName: document.getElementById("up_prName").value,
+        prPrice: document.getElementById("up_prPrice").value
+    };
+
+    console.log(name);
+
+    fetch('/api/update_product', {
+        method: 'put',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productData),
+    })
+    .then(response => response.text())
+    .then(data => {
+        // alert(data); // show success message
+        fetchProducts();
+        document.getElementById("productForm").reset(); // clear form
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error adding product');
+    });
+});
+
+
+
+
+async function editProduct(id) {
+    try {
+        const response = await fetch(`/api/product/${id}`);
+        const product = await response.json();
+
+        // Populate the form fields
+        document.getElementById('up_prId').value = product.prId;
+        document.getElementById('up_prName').value = product.prName;
+        document.getElementById('up_prPrice').value = product.prPrice;
+
+        // Scroll to form or show it if hidden
+        // document.getElementById('productForm').scrollIntoView({ behavior: 'smooth' });
+
+    } catch (error) {
+        console.error('Error fetching product:', error);
+    }
+}
+
+
+
+
+async function deleteProduct(id) {
+    try {
+        const response = await fetch(`/api/delete_product/${id}`, {
+            method: 'DELETE'
+        });
+        const product = await response.json();
+
+        fetchProducts();
+        // Scroll to form or show it if hidden
+        // document.getElementById('productForm').scrollIntoView({ behavior: 'smooth' });
+
+    } catch (error) {
+        console.error('Error fetching product:', error);
+    }
+}
+
+
+
+
+function editProduct11(id) {
+    $.ajax({
+        url: '/api/product/' + id,
+        method: 'GET',
+        success: function(product) {
+            // Populate the form fields
+            $('#up_prId').val(product.prId);
+            $('#up_prName').val(product.name);
+            $('#up_prPrice').val(product.prPrice);
+
+            // Scroll to the form or make it visible
+            $('#productForm')[0].scrollIntoView({ behavior: 'smooth' });
+        },
+        error: function(err) {
+            console.error('Error fetching product:', err);
+        }
+    });
+}
+
+
+    </script>
+</body>
+</html>
