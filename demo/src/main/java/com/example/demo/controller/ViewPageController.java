@@ -18,4 +18,11 @@ public class ViewPageController {
         return "products";
     }
 
+    
+        @GetMapping("/regForm")
+    public String regform_page(Model model) {
+        // model.addAttribute("Product", new Product()); // <-- important line
+        return "regForm";
+    }
+
 }
