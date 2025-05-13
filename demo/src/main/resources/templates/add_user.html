@@ -8,7 +8,7 @@
 
    
     <div class="formdiv">
-        <form th:action="@{/save}" th:object="${User}" method="post">
+        <form th:action="@{/save}" th:object="${user}" method="post">
            <div class="user_input">
             <label>Name: </label> 
             <input type="text" th:field="*{name}" /><br/>
