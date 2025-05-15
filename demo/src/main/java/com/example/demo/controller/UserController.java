@@ -77,4 +77,30 @@ public class UserController {
         repo.deleteById(id);
         return "redirect:/";
     }
+
+
+  @PostMapping("/regformSub")
+    public String regformSub(@ModelAttribute User user) {
+          if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+             System.out.println("Password is null or empty.");
+        throw new IllegalArgumentException("Password cannot be null or empty");
+        
+    }
+
+        UserEntity entity = new UserEntity();
+        entity.setEmail(user.getEmail());
+        entity.setName(user.getName());
+        entity.setPassword(passwordEncoder.encode(user.getPassword())); // Make sure password is not null
+        entity.setUserDeleteStatus(DeleteStatus.active);
+        repo.save(entity); 
+        return "redirect:/";
+    }
+
+
+
+
+
+
+
+
 }
