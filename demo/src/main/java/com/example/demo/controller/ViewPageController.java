@@ -2,8 +2,8 @@ package com.example.demo.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.example.demo.dto.RegistrationDTO;
 import com.example.demo.model.Product;
-import com.example.demo.model.User;
 
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
@@ -21,10 +21,9 @@ public class ViewPageController {
     }
 
     
-        @GetMapping("/regForm")
-    public String regform_page(Model model) {
-        model.addAttribute("user", new User()); // <-- important line
+   @GetMapping("/regForm")
+    public String showForm(Model model) {
+        model.addAttribute("regDto", new RegistrationDTO());
         return "regForm";
     }
-
 }

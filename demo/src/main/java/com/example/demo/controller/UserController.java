@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.RegistrationDTO;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.model.DeleteStatus;
 import com.example.demo.model.User;
@@ -79,27 +80,24 @@ public class UserController {
     }
 
 
-  @PostMapping("/regformSub")
-    public String regformSub(@ModelAttribute User user) {
-          if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-             System.out.println("Password is null or empty.");
-        throw new IllegalArgumentException("Password cannot be null or empty");
-        
+  
+@PostMapping("/regformSub")
+public String handleForm(@ModelAttribute("regDto") RegistrationDTO dto) {
+    // Validate passwords match
+    if (!dto.getUser_pwd().equals(dto.getConfirmPwd())) {
+        throw new IllegalArgumentException("Passwords do not match");
     }
 
-        UserEntity entity = new UserEntity();
-        entity.setEmail(user.getEmail());
-        entity.setName(user.getName());
-        entity.setPassword(passwordEncoder.encode(user.getPassword())); // Make sure password is not null
-        entity.setUserDeleteStatus(DeleteStatus.active);
-        repo.save(entity); 
-        return "redirect:/";
-    }
+    // Map DTO to entity and save
+    UserEntity entity = new UserEntity();
+    entity.setName(dto.getName());
+    entity.setEmail(dto.getEmail());
+    entity.setPassword(passwordEncoder.encode(dto.getUser_pwd()));
+    entity.setUserDeleteStatus(DeleteStatus.active);
+    repo.save(entity);
 
-
-
-
-
+    return "redirect:/";
+}
 
 
 
