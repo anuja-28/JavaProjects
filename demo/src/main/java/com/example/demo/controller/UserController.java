@@ -84,10 +84,11 @@ public class UserController {
 @PostMapping("/regformSub")
 public String handleForm(@ModelAttribute("regDto") RegistrationDTO dto) {
     // Validate passwords match
-    if (!dto.getUser_pwd().equals(dto.getConfirmPwd())) {
-        throw new IllegalArgumentException("Passwords do not match");
-    }
-
+   if (dto.getUser_pwd() == null || dto.getConfirmPwd() == null ||
+    !dto.getUser_pwd().equals(dto.getConfirmPwd())) {
+    // model.addAttribute("error", "Passwords do not match");
+    return "regForm";
+}
     // Map DTO to entity and save
     UserEntity entity = new UserEntity();
     entity.setName(dto.getName());
