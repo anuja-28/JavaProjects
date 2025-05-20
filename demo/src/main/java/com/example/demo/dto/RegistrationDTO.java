@@ -1,8 +1,10 @@
 package com.example.demo.dto;
 
-import jakarta.validation.constraints.Email;
+// import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
+
 
 public class RegistrationDTO {
 
@@ -11,7 +13,11 @@ public class RegistrationDTO {
     private String name;
 
     @NotBlank(message = "Email is required")
-    @Email(message = "Please enter a valid email address")
+    // @Email(message = "Please enter a valid email address")
+    @Pattern(
+    regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+    message = "Please enter a valid email address"
+)
     private String email;
 
     @NotBlank(message = "Password is required")
@@ -43,9 +49,9 @@ public class RegistrationDTO {
         return user_pwd;
     }
 
-    public void setPassword(String user_pwd) {
-        this.user_pwd = user_pwd;
-    }
+    public void setUser_pwd(String user_pwd) {
+    this.user_pwd = user_pwd;
+}
 
     public String getConfirmPwd() {
         return confirmPwd;

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>user List</title>
+    <link rel="stylesheet" th:href="@{/css/custom.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<style>
+    td ,th {
+        padding: 5px; 
+        margin: 5px;
+        font-size: 15px;
+    }
+
+
+
+
+
+</style>
+<body>
+
+
+
+<div th:fragment="myHeader">
+<div class="header">
+  <a href="#default" class="logo">Spring boot MVC</a>
+  <div class="header-right">
+    <a class=" mx-3" href="/">Home</a>
+    <a class=" mx-3"href="regForm">Register</a>
+    <a class=" mx-3" href="products_page">Products</a>
+  </div>
+</div>
+
+
+</div>
+
+</body>
+</html>
+

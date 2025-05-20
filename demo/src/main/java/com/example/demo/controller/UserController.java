@@ -5,10 +5,14 @@ import com.example.demo.entity.UserEntity;
 import com.example.demo.model.DeleteStatus;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -80,25 +84,35 @@ public class UserController {
     }
 
 
-  
 @PostMapping("/regformSub")
-public String handleForm(@ModelAttribute("regDto") RegistrationDTO dto) {
-    // Validate passwords match
-   if (dto.getUser_pwd() == null || dto.getConfirmPwd() == null ||
-    !dto.getUser_pwd().equals(dto.getConfirmPwd())) {
-    // model.addAttribute("error", "Passwords do not match");
-    return "regForm";
-}
+public String handleForm(
+    @ModelAttribute("regDto") @Valid RegistrationDTO dto,
+    BindingResult result,
+    Model model
+) {
+    // Custom validation: check if passwords match
+    if (dto.getUser_pwd() != null && dto.getConfirmPwd() != null &&
+        !dto.getUser_pwd().equals(dto.getConfirmPwd())) {
+        result.rejectValue("confirmPwd", "error.confirmPwd", "Passwords do not match");
+    }
+
+    // Check for validation errors
+    if (result.hasErrors()) {
+        return "regForm"; // Redisplay the form with validation errors
+    }
+
     // Map DTO to entity and save
     UserEntity entity = new UserEntity();
     entity.setName(dto.getName());
     entity.setEmail(dto.getEmail());
     entity.setPassword(passwordEncoder.encode(dto.getUser_pwd()));
     entity.setUserDeleteStatus(DeleteStatus.active);
+
     repo.save(entity);
 
     return "redirect:/";
 }
+
 
 
 
