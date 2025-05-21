@@ -109,7 +109,7 @@ public String handleForm(
     entity.setUserDeleteStatus(DeleteStatus.active);
 
     repo.save(entity);
-
+System.out.println("Saving user: " + entity);
     return "redirect:/";
 }
 
