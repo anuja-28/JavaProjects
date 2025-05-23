@@ -1,5 +1,6 @@
 package com.example.demo.controller;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.example.demo.dto.RegistrationDTO;
 import com.example.demo.entity.UserEntity;
 import com.example.demo.model.DeleteStatus;
@@ -15,9 +16,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+
 @Controller
 public class UserController {
-
+private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserRepository repo;
 
@@ -93,7 +95,12 @@ public String handleForm(
     // Custom validation: check if passwords match
     if (dto.getUser_pwd() != null && dto.getConfirmPwd() != null &&
         !dto.getUser_pwd().equals(dto.getConfirmPwd())) {
+
+
+ logger.info("===== APPLICATION STARTED =====");
+
         result.rejectValue("confirmPwd", "error.confirmPwd", "Passwords do not match");
+       
     }
 
     // Check for validation errors
@@ -109,8 +116,8 @@ public String handleForm(
     entity.setUserDeleteStatus(DeleteStatus.active);
 
     repo.save(entity);
-System.out.println("Saving user: " + entity);
-    return "redirect:/";
+logger.info("This is an info log ===> {}", entity);
+     return "redirect:/";
 }
 
 

@@ -18,7 +18,7 @@
   <div class="container border mt-5">
 
 
-  <form id="regForm" th:action="@{/regformSub}" th:object="${regDto}" method="post"  novalidate>
+  <form id="regForm" th:action="@{/regformSub}" th:object="${regDto}" method="post" class="needs-validation"  novalidate>
   <div class="mb-3">
     <label>Name</label>
     <input type="text" th:field="*{name}" class="form-control" required minlength="2" maxlength="50" />
@@ -30,7 +30,7 @@
   <div class="mb-3">
     <label>Email</label>
     <input type="email" th:field="*{email}" class="form-control" required
-      pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" autocomplete="off"/>
+       autocomplete="off"/>
     <div class="invalid-feedback">
       Please enter a valid email address.
     </div>
@@ -46,7 +46,7 @@
 
   <div class="mb-3">
     <label>Confirm Password</label>
-    <input type="password" id="confirmPwd" class="form-control" required />
+    <input type="password" id="confirmPwd" th:field="*{confirmPwd}" class="form-control" required />
     <div class="invalid-feedback" id="confirmPwdFeedback">
       Passwords must match.
     </div>
