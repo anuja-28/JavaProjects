@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -90,6 +91,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserController.clas
 public String handleForm(
     @ModelAttribute("regDto") @Valid RegistrationDTO dto,
     BindingResult result,
+     RedirectAttributes redirectAttributes,
     Model model
 ) {
     // Custom validation: check if passwords match
@@ -116,8 +118,12 @@ public String handleForm(
     entity.setUserDeleteStatus(DeleteStatus.active);
 
     repo.save(entity);
-logger.info("This is an info log ===> {}", entity);
-     return "redirect:/";
+        logger.info("This is an info log ============================================>>>>>>>>>>>>>>>>> {}", entity);
+   // Send a flag to trigger SweetAlert in HTML
+        redirectAttributes.addFlashAttribute("success", true);
+        redirectAttributes.addFlashAttribute("message", "Registration successful!");
+        return "redirect:/regForm";
+
 }
 
 
