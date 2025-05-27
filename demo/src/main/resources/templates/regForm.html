@@ -39,6 +39,14 @@
   <div class="mb-3">
     <label>Password</label>
     <input type="password" th:field="*{user_pwd}" class="form-control" required minlength="6" />
+     <span onclick="togglePassword1()" style="
+        position: relative;
+        left: 95%;
+        top: -50px;
+        transform: translateY(-110%);
+        cursor: pointer;
+    "> <i class="fa fa-eye" id="toggleIcon"></i>
+       </span>
     <div class="invalid-feedback">
       Password must be at least 6 characters.
     </div>
@@ -47,6 +55,14 @@
   <div class="mb-3">
     <label>Confirm Password</label>
     <input type="password" id="confirmPwd" th:field="*{confirmPwd}" class="form-control" required />
+     <span onclick="togglePassword2()" style="
+        position: relative;
+        left: 95%;
+        top: -50px;
+        transform: translateY(-110%);
+        cursor: pointer;
+    "> <i class="fa fa-eye" id="toggleIcon"></i>
+       </span>
     <div class="invalid-feedback" id="confirmPwdFeedback">
       Passwords must match.
     </div>
@@ -61,16 +77,33 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-  function togglePassword() {
+  function togglePassword1() {
     const passwordInput = document.getElementById("user_pwd");
-    const type = passwordInput.getAttribute("type");
+    const type1 = passwordInput.getAttribute("type");
 
-    if (type === "password") {
+    if (type1 === "password" ) {
       passwordInput.setAttribute("type", "text");
+
     } else {
       passwordInput.setAttribute("type", "password");
     }
+
+   
   }
+
+  function togglePassword2() {
+     const confirmPwd = document.getElementById("confirmPwd");
+     const type2 = confirmPwd.getAttribute("type");
+
+     if (type2 === "password") {
+      confirmPwd.setAttribute("type", "text");
+
+    } else {
+      confirmPwd.setAttribute("type", "password");
+    }
+  }
+
+
 
 
 
