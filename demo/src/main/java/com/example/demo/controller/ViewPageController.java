@@ -23,7 +23,16 @@ public class ViewPageController {
     
    @GetMapping("/regForm")
     public String showForm(Model model) {
+
+
+
+ if (!model.containsAttribute("regDto")) {
         model.addAttribute("regDto", new RegistrationDTO());
-        return "regForm";
+    }
+    return "regForm";
+
+
+        // model.addAttribute("regDto", new RegistrationDTO());
+        // return "regForm";
     }
 }

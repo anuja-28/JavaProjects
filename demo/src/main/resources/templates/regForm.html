@@ -108,21 +108,6 @@
 
 
 
-$(document).ready(function () {
- let showSuccess = /*[[${success}]]*/ false;
-  let msg = /*[['${message}']]*/ '';
-// alert(showSuccess);
-  if (showSuccess) {
-    Swal.fire({
-      icon: 'success',
-      title: 'Success!',
-      text: msg,
-      confirmButtonText: 'OK'
-    }).then(() => {
-      window.location.href = '/'; // or wherever
-    });
-  }
-});
 
 
 
@@ -164,5 +149,22 @@ $(document).ready(function () {
 
   
 </script>
+
+<script th:inline="javascript">
+  let showSuccess = /*[[${success}]]*/ false;
+  let msg = /*[['${message}']]*/ '';
+
+  if (showSuccess) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Success!',
+      text: 'Registration Successful!',
+      confirmButtonText: 'OK'
+    }).then(() => {
+      window.location.href = '/'; // redirect after confirmation
+    });
+  }
+</script>
+
 
 </html>
