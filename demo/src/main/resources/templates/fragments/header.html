@@ -26,6 +26,35 @@
 
 
 <div th:fragment="myHeader">
+  <style>  .header {
+      background-color: #07405c; /* light background */
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #e4e7e8;
+      text-decoration: none;
+    }
+
+    .header-right a {
+      text-decoration: none;
+      color: #eaf1f1;
+      font-weight: 500;
+      margin: 0 15px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .header-right a:hover {
+      background-color: #9ACBD0;
+      color: #006A71;
+    }</style>
 <div class="header">
   <a href="#default" class="logo">Spring boot MVC</a>
   <div class="header-right">
