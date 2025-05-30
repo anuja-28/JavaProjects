@@ -16,16 +16,31 @@
 <style>
     #loginForm input{
         padding: 10px;
-        border: 2px solid #34949f;
+        border: 2px solid #083b54;
         border-radius: 5px;
+    }
+
+    .formdiv {
+        border: 1px solid #083b54; 
+        border-radius: 5px; 
+        width: 30%; 
+        margin: auto;
+        padding: 10px 30px;
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px; 
+    
+    }
+
+    .btn-primary{
+        background-color: #3d7a98;
     }
 </style>
 <body>
 
 <div th:replace="fragments/header :: myHeader"></div>
 
-<h2 class="text-center mt-4">Login</h2>
-<div style="border: 1px solid rgb(202, 135, 52); border-radius: 5px; width: 30%; margin: auto;padding: 5%;box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px; ">
+<!-- <h2 class="text-center mt-4" style="font-family:  sans-serif;">Login</h2> -->
+ <br><br>
+<div class="formdiv mt-3" >
 <form th:action="@{/login}" id="loginForm" method="post" autocomplete="">
     <div class="mt-3 row">
         <label>Email:</label><br>
@@ -36,15 +51,15 @@
         <input type="password" id="password" name="password"/>
         <span onclick="togglePassword()" style="
         position: relative;
-        left: 90%;
-        top: 50%;
+        left: 85%;
+        top: -33px;
         transform: translateY(-110%);
         cursor: pointer;
     "> <i class="fa fa-eye" id="toggleIcon"></i>
        </span>
     </div>
-    <div class="mt-4">
-        <button type="submit">Login</button>
+    <div class="mb-4 text-center">
+        <button type="submit" class="btn btn-primary" >Login</button>
     </div>
 </form>
 </div>
