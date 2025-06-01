@@ -35,6 +35,9 @@
     <h1 class="text-center">Users</h1>
     
     <a href="/add" class="btn btn-primary mb-3" style="margin-left: 150px;">Add New user</a>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+  Open modal
+</button>
     <a href="/products_page" class="btn btn-info mb-3">  Products  </a>
        
     <table border="1"  class="table-bordered" style="border-collapse: collapse; width: 80%; margin: auto;">
@@ -53,5 +56,49 @@
             </td>
         </tr>
     </table>
+
+
+
+
+    <div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Modal Heading</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+                    <div class="formdiv">
+                    <form th:action="@{/save}" th:object="${user}" method="post">
+                    <div class="user_input">
+                        <label>Name: </label> 
+                        <input type="text" th:field="*{name}" /><br/>
+                    </div> 
+                    <div class="user_input">
+                        <label> Email:</label>   
+                        <input type="text" th:field="*{email}" /><br/>
+                    </div>
+                    <div class="user_input">
+                        <label> password:</label>   
+                        <input type="text" th:field="*{password}" /><br/>
+                    </div>
+                        <button type="submit">Save</button>
+                    </form>
+
+                </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
 </body>
 </html>

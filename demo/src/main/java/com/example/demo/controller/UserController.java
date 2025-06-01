@@ -30,6 +30,7 @@ private static final Logger logger = LoggerFactory.getLogger(UserController.clas
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("users", repo.findAll());
+        model.addAttribute("user", new User());
         return "index";
     }
 
