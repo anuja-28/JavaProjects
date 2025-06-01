@@ -47,7 +47,7 @@ public class SecurityConfig {
         )
             .authenticationProvider(authenticationProvider()) // ✅ This is important!
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/generate/", "/css/**").permitAll()
+                .requestMatchers("/login", "/generate", "/css/**").permitAll()
                 .requestMatchers("/api/**").hasAuthority("ROLE_USER")
                 .anyRequest().authenticated()
 
