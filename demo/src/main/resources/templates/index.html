@@ -66,37 +66,38 @@
 
       <!-- Modal Header -->
       <div class="modal-header">
-        <h4 class="modal-title">Modal Heading</h4>
+        <h4 class="modal-title">Add Customer</h4>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
       <!-- Modal body -->
       <div class="modal-body">
-                    <div class="formdiv">
+                    <div class="modalformdiv">
                     <form th:action="@{/save}" th:object="${user}" method="post">
                     <div class="user_input">
                         <label>Name: </label> 
-                        <input type="text" th:field="*{name}" /><br/>
+                        <input class="form-control" type="text" th:field="*{name}" /><br/>
                     </div> 
                     <div class="user_input">
                         <label> Email:</label>   
-                        <input type="text" th:field="*{email}" /><br/>
+                        <input  class="form-control" type="text" th:field="*{email}" /><br/>
                     </div>
                     <div class="user_input">
-                        <label> password:</label>   
-                        <input type="text" th:field="*{password}" /><br/>
+                        <label> Password:</label>   
+                        <input  class="form-control" type="text" th:field="*{password}" /><br/>
                     </div>
-                        <button type="submit">Save</button>
-                    </form>
+                        <!-- <button type="submit">Save</button> -->
+                  
 
                 </div>
       </div>
 
       <!-- Modal footer -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success" >Save</button>
+         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
       </div>
-
+  </form>
     </div>
   </div>
 </div>
