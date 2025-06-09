@@ -18,8 +18,8 @@ public class CustomerImplRepo implements CustomerRepository {
  
  @Override
  public int addCustomer(Customer customer) {
-  String insertQuery = "insert into tbl_customer_details(cust_name, cust_email) values (?,?)";
-  return jdbcTemplate.update(insertQuery,customer.getCustName(),customer.getCustEmail());
+  String insertQuery = "insert into tbl_customer_details(cust_name, cust_mobile, cust_email,  cust_address, ) values (?,?,?,?)";
+  return jdbcTemplate.update(insertQuery,customer.getCustName(),customer.getCustMobile(), customer.getCustEmail(), customer.getCustAddress());
  }
 
  @Override
@@ -36,5 +36,17 @@ public Customer getCustomerById(int cust_id){
   return customer;
 }
 
+@Override
+public int updateCustomer(Customer customer){
+  String qry1 = "update tbl_customer_details set cust_name = ? , cust_mobile = ? , cust_email = ? , cust_address = ?  where cust_id = ?";
+  return jdbcTemplate.update(qry1,customer.getCustName(), customer.getCustMobile(),customer.getCustEmail(), customer.getCustAddress());
+ 
+}
+
+@Override
+public int deleteCustomerById(int cust_id){
+  String qry2 = "update tbl_customer_details set cust_active_status = 'deactived_cust' where cust_id = ?";
+  return jdbcTemplate.update(qry2, cust_id);
+}
 
 }
