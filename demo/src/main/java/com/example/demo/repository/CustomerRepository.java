@@ -9,7 +9,7 @@ public interface CustomerRepository {
 
  int addCustomer(Customer customer);
  List<Customer> getAllCustomers();
-//  Customer getCustomerById(int cust_id);
+ Customer getCustomerById(int cust_id);
 //  int updateCustomer(Customer customer);
 //  int deleteCustomerById(int cust_id);
     

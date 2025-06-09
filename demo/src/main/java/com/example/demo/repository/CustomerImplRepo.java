@@ -29,6 +29,12 @@ public class CustomerImplRepo implements CustomerRepository {
    return allCust;
 }
 
+@Override
+public Customer getCustomerById(int cust_id){
+  String qry = "Select * from tbl_customer_details where cust_id = ?";
+  Customer customer = jdbcTemplate.queryForObject(qry, BeanPropertyRowMapper.newInstance(Customer.class), cust_id);
+  return customer;
+}
 
 
 }
