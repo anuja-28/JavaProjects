@@ -3,6 +3,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.demo.dto.RegistrationDTO;
 import com.example.demo.entity.UserEntity;
+import com.example.demo.model.Customer;
 import com.example.demo.model.DeleteStatus;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
@@ -29,8 +30,10 @@ private static final Logger logger = LoggerFactory.getLogger(UserController.clas
 
     @GetMapping("/")
     public String home(Model model) {
+
         model.addAttribute("users", repo.findAll());
         model.addAttribute("user", new User());
+        model.addAttribute("customer", new Customer());
         return "index";
     }
 
