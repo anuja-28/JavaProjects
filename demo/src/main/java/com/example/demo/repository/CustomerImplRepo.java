@@ -18,7 +18,7 @@ public class CustomerImplRepo implements CustomerRepository {
  
  @Override
  public int addCustomer(Customer customer) {
-  String insertQuery = "insert into tbl_customer_details(cust_name, cust_mobile, cust_email,  cust_address, ) values (?,?,?,?)";
+  String insertQuery = "insert into tbl_customer_details(cust_name, cust_mobile, cust_email,  cust_address ) values (?,?,?,?)";
   return jdbcTemplate.update(insertQuery,customer.getCustName(),customer.getCustMobile(), customer.getCustEmail(), customer.getCustAddress());
  }
 
