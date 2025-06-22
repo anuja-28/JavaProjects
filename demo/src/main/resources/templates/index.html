@@ -89,10 +89,10 @@
 <script>
     function saveCustomer() {
         const data = {
-            cname: document.getElementById("custName").value,
-            cemail: document.getElementById("custEmail").value,
-            cmobile: document.getElementById("custMobile").value,
-            cadress: document.getElementById("custAddress").value
+            custName: document.getElementById("custName").value,
+            custEmail: document.getElementById("custEmail").value,
+            custMobile: document.getElementById("custMobile").value,
+            custAddress: document.getElementById("custAddress").value
         };
 
         fetch("/api/saveCust", {
