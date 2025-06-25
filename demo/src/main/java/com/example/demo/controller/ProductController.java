@@ -20,6 +20,7 @@ public class ProductController {
  @Autowired
  ProductJdbcRepository productJdbcRepository;
  
+ 
  @PostMapping("/addproduct")
  public int addProduct(@RequestBody Product product) {
   return productJdbcRepository.addProduct(product);
