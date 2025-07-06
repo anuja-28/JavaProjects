@@ -15,6 +15,10 @@
         margin: 5px;
         font-size: 15px;
     }
+     .error {
+        color: red;
+        font-size: 13px;
+    }
 </style>
 
 <body>
@@ -60,19 +64,25 @@
                 <form id="custAddform">
                     <div class="user_input">
                         <label>Name:</label>
-                        <input id="custName" class="form-control" type="text" /><br/>
+                        <input id="custName" class="form-control" type="text" />
+                        <div class="error" id="custNameError"></div><br/>
+                        
                     </div>
                     <div class="user_input">
                         <label>Email:</label>
-                        <input id="custEmail" class="form-control" type="text" /><br/>
+                        <input id="custEmail" class="form-control" type="text" />
+                        <div class="error" id="custEmailError"></div><br/>
                     </div>
                     <div class="user_input">
                         <label>Mobile No:</label>
-                        <input id="custMobile" class="form-control" type="text" /><br/>
+                        <input id="custMobile" class="form-control" type="text" />
+                        <div class="error" id="custMobileError"></div><br/>
+                        <br/>
                     </div>
                     <div class="user_input">
                         <label>Address:</label>
-                        <input id="custAddress" class="form-control" type="text" /><br/>
+                        <input id="custAddress" class="form-control" type="text" />
+                        <div class="error" id="custAddressError"></div><br/>
                     </div>
                 </form>
             </div>
@@ -90,40 +100,57 @@
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- JavaScript to Save Customer -->
 <script>
-    function saveCustomer() {
-        const data = {
-            custName: document.getElementById("custName").value,
-            custEmail: document.getElementById("custEmail").value,
-            custMobile: document.getElementById("custMobile").value,
-            custAddress: document.getElementById("custAddress").value
-        };
+  function saveCustomer() {
+    // Clear old errors
+    document.querySelectorAll(".error").forEach(el => el.textContent = "");
 
-        fetch("/api/saveCust", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        })
-        .then(response => {
-            if (response.ok) {
-                  Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Customer Added!',
-                    confirmButtonText: 'OK'
-                    }).then(() => {
-                     location.reload(); // redirect after confirmation
-                    });
-               // alert("Customer saved successfully!");
-               // refresh the page to show in table
-            } else {
-                alert("Error saving customer.");
-            }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("Something went wrong.");
+    const data = {
+        custName: document.getElementById("custName").value,
+        custEmail: document.getElementById("custEmail").value,
+        custMobile: document.getElementById("custMobile").value,
+        custAddress: document.getElementById("custAddress").value
+    };
+
+    fetch("/api/saveCust", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(errors => { throw errors });
+        }
+        return response.text(); // or .json() if your success response is JSON
+    })
+    .then(result => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Customer Added!',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            location.reload();
         });
-    }
+    })
+    .catch(errors => {
+        // Display field-level validation errors
+        for (const field in errors) {
+            const errorDiv = document.getElementById(field + "Error");
+            if (errorDiv) {
+                errorDiv.textContent = errors[field];
+            }
+        }
+
+        // Optional: show SweetAlert summary
+        Swal.fire({
+            icon: 'error',
+            title: 'Form Error!',
+            text: 'Please fix the highlighted errors.',
+            confirmButtonText: 'OK'
+        });
+    });
+}
+
 </script>
 
 </body>
