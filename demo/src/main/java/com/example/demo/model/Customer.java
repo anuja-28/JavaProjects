@@ -22,6 +22,8 @@ public class Customer {
   @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Please enter a valid email address")
   @Column(name = "cust_email")
   private String custEmail;
+
+   @NotBlank(message = "Address is required")
   @Column(name = "cust_address")
   private String custAddress;
 
