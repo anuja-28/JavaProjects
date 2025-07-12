@@ -14,6 +14,7 @@ public class Customer {
   private String custName;
 
   @Size(min = 10, max = 10, message = "Mobile Number must be 10 digits.")
+  @Pattern(regexp = "^[789]\\d{9}$") 
   @Column(name = "cust_mobile")
   private String custMobile;
 
@@ -59,7 +60,7 @@ public class Customer {
   }
 
   public String getCustAddress() {
-    return custName;
+    return custAddress;
   }
 
   // setters
@@ -80,7 +81,7 @@ public class Customer {
   }
 
   public void setCustAddress(String cust_address) {
-    this.custName = cust_address;
+    this.custAddress = cust_address;
   }
 
 }

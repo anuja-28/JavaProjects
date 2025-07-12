@@ -19,6 +19,10 @@
         color: red;
         font-size: 13px;
     }
+
+     input.error-border {
+    border-color: red;
+  }
 </style>
 
 <body>
@@ -61,7 +65,7 @@
 
             <!-- Modal Body -->
             <div class="modal-body">
-                <form id="custAddform"  class="p-1">
+                <form id="customerForm"  class="p-1">
                     <div class="user_input mt-1">
                         <label>Name:</label>
                         <input id="custName" class="form-control" type="text" />
@@ -75,7 +79,7 @@
                     </div>
                     <div class="user_input mt-1">
                         <label>Mobile No:</label>
-                        <input id="custMobile" class="form-control" type="text" />
+                        <input id="custMobile" class="form-control" type="text" maxlength="10"/>
                         <small class="error" id="custMobileError"></small><br/>
                     </div>
                     <div class="user_input mt-1">
@@ -83,72 +87,140 @@
                         <input id="custAddress" class="form-control" type="text" />
                         <small class="error" id="custAddressError"></small><br/>
                     </div>
-                </form>
+                
             </div>
 
             <!-- Modal Footer -->
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="saveCustomer()">Save</button>
+                <button type="submit" class="btn btn-success" >Save</button>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
-
+</form>
         </div>
     </div>
 </div>
 
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- JavaScript to Save Customer -->
-<script>
-  function saveCustomer() {
-    // Clear old errors
-    document.querySelectorAll(".error").forEach(el => el.textContent = "");
+
+ <script>
+  const fields = ["custName", "custMobile", "custEmail", "custAddress"];
+
+  function validateInput(field, value) {
+    switch (field) {
+      case "custName":
+        return value.length >= 2 && value.length <= 50;
+      case "custMobile":
+        return /^\d{10}$/.test(value);
+      case "custEmail":
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      case "custAddress":
+        return value.trim() !== "";
+      default:
+        return true;
+    }
+  }
+
+  // Attach live validation
+  fields.forEach(field => {
+    const input = document.getElementById(field);
+    const errorDiv = document.getElementById(field + "Error");
+
+    input.addEventListener("input", () => {
+      const isValid = validateInput(field, input.value);
+      if (isValid) {
+        input.classList.remove("error-border");
+        errorDiv.textContent = "";
+      } else {
+        input.classList.add("error-border");
+        errorDiv.textContent = getErrorMessage(field);
+      }
+    });
+  });
+
+  function getErrorMessage(field) {
+    switch (field) {
+      case "custName":
+        return "Name must be between 2 and 50 characters.";
+      case "custMobile":
+        return "Mobile number must be 10 digits.";
+      case "custEmail":
+        return "Enter a valid email address.";
+      case "custAddress":
+        return "Address is required.";
+      default:
+        return "";
+    }
+  }
+
+  // Submit form to API
+  document.getElementById("customerForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    // Clear all old errors
+    fields.forEach(field => {
+      document.getElementById(field + "Error").textContent = "";
+      document.getElementById(field).classList.remove("error-border");
+    });
 
     const data = {
-        custName: document.getElementById("custName").value,
-        custEmail: document.getElementById("custEmail").value,
-        custMobile: document.getElementById("custMobile").value,
-        custAddress: document.getElementById("custAddress").value
+      custName: document.getElementById("custName").value,
+      custMobile: document.getElementById("custMobile").value,
+      custEmail: document.getElementById("custEmail").value,
+      custAddress: document.getElementById("custAddress").value
     };
 
+    // Do final front-end check before submitting
+    let hasErrors = false;
+    fields.forEach(field => {
+      const input = document.getElementById(field);
+      const isValid = validateInput(field, input.value);
+      if (!isValid) {
+        hasErrors = true;
+        input.classList.add("error-border");
+        document.getElementById(field + "Error").textContent = getErrorMessage(field);
+      }
+    });
+
+    if (hasErrors) return;
+
+    // Send to API
     fetch("/api/saveCust", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
     })
-    .then(response => {
+      .then(response => {
         if (!response.ok) {
-            return response.json().then(errors => { throw errors });
+          return response.json().then(errors => { throw errors });
         }
-        return response.text(); // or .json() if your success response is JSON
-    })
-    .then(result => {
+        return response.text(); // or response.json()
+      })
+      .then(result => {
         Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: 'Customer Added!',
-            confirmButtonText: 'OK'
-        }).then(() => {
-            location.reload();
-        });
-    })
-    .catch(errors => {
-        // Display field-level validation errors
+          icon: 'success',
+          title: 'Customer Saved!',
+          confirmButtonText: 'OK'
+        }).then(() => location.reload());
+      })
+      .catch(errors => {
+        // Server-side validation errors
         for (const field in errors) {
-            const errorDiv = document.getElementById(field + "Error");
-            if (errorDiv) {
-                errorDiv.textContent = errors[field];
-            }
+          const input = document.getElementById(field);
+          const errorDiv = document.getElementById(field + "Error");
+          input.classList.add("error-border");
+          errorDiv.textContent = errors[field];
         }
 
-        // Optional: show SweetAlert summary
         Swal.fire({
-            icon: 'error',
-            title: 'Form Error!',
-            text: 'Please fix the highlighted errors.',
-            confirmButtonText: 'OK'
+          icon: 'error',
+          title: 'Form Error!',
+          text: 'Please fix the highlighted fields.',
+          confirmButtonText: 'OK'
         });
-    });
-}
+      });
+  });
+
 
 </script>
 
