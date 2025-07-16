@@ -106,7 +106,7 @@
 
 <br>
 <div class="container p-2 border rounded">
-<table id="ajaxTable" class="table-bordered" >
+<table id="ajaxTable" class="table border table-bordered mt-3" >
     <thead>
         <tr>
           <th>Name</th>
@@ -249,15 +249,15 @@
 $(document).ready(function () {
         $('#ajaxTable').DataTable({
             ajax: {
-                url: '/api/users',
+                url: '/api/getcustomers',
                 method:'get',
                 dataSrc: ''
             },
             columns: [
-                { data: 'id' },
-                { data: 'name' },
-                { data: 'email' },
-                { data: 'address' }
+                { data: 'custName' },
+                { data: 'custMobile' },
+                { data: 'custEmail' },
+                { data: 'custAddress' }
             ]
         });
     });
