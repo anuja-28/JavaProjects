@@ -31,14 +31,14 @@
 
 <div th:replace="fragments/header :: myHeader"></div>
 
-<h1 class="text-center">Users</h1>
+<h1 class="text-center mt-4">Customers</h1>
 
 <!-- <a href="/add" class="btn btn-primary mb-3" style="margin-left: 150px;">Add New User</a> -->
 <button type="button" class="btn btn-success mb-3 mx-5" data-bs-toggle="modal" data-bs-target="#addCustModal">
     Add Customer
 </button>
 <!-- <a href="/products_page" class="btn btn-info mb-3">Products</a> -->
-
+<!-- 
 <table border="1" class="table-bordered" style="border-collapse: collapse; width: 80%; margin: auto;">
     <tr>
         <th>ID</th><th>Name</th><th>Email</th><th>Actions</th>
@@ -52,7 +52,7 @@
             <a th:href="@{'/delete/' + ${user.id}}" class="btn btn-danger">Delete</a>
         </td>
     </tr>
-</table>
+</table> -->
 
 
 <!-- Modal -->
@@ -105,14 +105,17 @@
 
 
 <br>
-<div class="container p-2 border rounded">
+<div class="container p-2  rounded">
 <table id="ajaxTable" class="table border table-bordered mt-3" >
     <thead>
         <tr>
+          <th width="8%">Sr. No.</th>
           <th>Name</th>
           <th>Email</th>
           <th>Mobile No.</th>
-          <th>Address</th></tr>
+          <th>Address</th>
+          <th>Action</th>
+        </tr>
     </thead>
 </table>
 </div>
@@ -120,9 +123,8 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <!-- DataTables Core JS (Required) -->
-  <script src=
-"https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js">
-    </script> <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script> 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 <!-- JavaScript to Save Customer -->
@@ -254,10 +256,29 @@ $(document).ready(function () {
                 dataSrc: ''
             },
             columns: [
+             {
+        data: null,
+         className: 'text-center',  
+        render: function (data, type, row, meta) {
+          return meta.row + 1;  // Serial number
+        }
+      }, 
                 { data: 'custName' },
-                { data: 'custMobile' },
+                { data: 'custMobile', className: 'text-center',   },
                 { data: 'custEmail' },
-                { data: 'custAddress' }
+                { data: 'custAddress' },
+                 {
+    data: null,
+    className: 'text-center',
+    orderable: false,
+    searchable: false,
+                 render: function (data, type, row) {
+      return `
+        <button class="btn btn-sm btn-success edit-btn" data-id="${row.id}"><i class="fa fa-edit"></i> Edit</button>
+        <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}"><i class="fa fa-trash"></i> Delete</button>
+      `;
+    }
+  }
             ]
         });
     });
