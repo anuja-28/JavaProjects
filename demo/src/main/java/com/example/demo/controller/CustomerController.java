@@ -47,6 +47,23 @@ public class CustomerController {
     }
 
 
+    @PostMapping("/updtCust")
+    public ResponseEntity<?> updateCustomer(@Valid @RequestBody Customer cust, BindingResult result) {
+        if (result.hasErrors()) {
+            // Build custom validation error response
+            Map<String, String> errors = new HashMap<>();
+            result.getFieldErrors().forEach(error -> {
+                errors.put(error.getField(), error.getDefaultMessage());
+            });
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        // Save to DB (replace with your actual method)
+        customerRepository.updateCustomer(cust);
+
+        return ResponseEntity.ok("Customer info updated successfully!");
+    }  
+
 
 
  

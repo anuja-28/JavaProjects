@@ -55,7 +55,7 @@
 </table> -->
 
 
-<!-- Modal -->
+<!-- Add Modal -->
 <div class="modal fade" id="addCustModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -96,6 +96,56 @@
             <!-- Modal Footer -->
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success" >Save</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+</form>
+        </div>
+    </div>
+</div>
+
+
+<!-- update Modal -->
+<div class="modal fade" id="updateCustModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Update Customer</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form id="UpdtcustomerForm"  class="p-1">
+                    <input id="upcustid" class="form-control" type="text" />
+                    <div class="user_input mt-1">
+                        <label>Name:</label>
+                        <input id="upcustName" class="form-control" type="text" />
+                        <small class="error" id="upcustNameError"></small><br/>
+                        
+                    </div>
+                    <div class="user_input mt-1">
+                        <label>Email:</label>
+                        <input id="upcustEmail" class="form-control" type="text" />
+                        <small class="error" id="upcustEmailError"></small><br/>
+                    </div>
+                    <div class="user_input mt-1">
+                        <label>Mobile No:</label>
+                        <input id="upcustMobile" class="form-control" type="text" maxlength="10"/>
+                        <small class="error" id="upcustMobileError"></small><br/>
+                    </div>
+                    <div class="user_input mt-1">
+                        <label>Address:</label>
+                        <input id="upcustAddress" class="form-control" type="text" />
+                        <small class="error" id="upcustAddressError"></small><br/>
+                    </div>
+                
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success" >Save Updates</button>
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
 </form>
@@ -257,31 +307,115 @@ $(document).ready(function () {
             },
             columns: [
              {
-        data: null,
-         className: 'text-center',  
-        render: function (data, type, row, meta) {
-          return meta.row + 1;  // Serial number
-        }
-      }, 
-                { data: 'custName' },
-                { data: 'custMobile', className: 'text-center',   },
-                { data: 'custEmail' },
-                { data: 'custAddress' },
-                 {
-    data: null,
-    className: 'text-center',
-    orderable: false,
-    searchable: false,
-                 render: function (data, type, row) {
-      return `
-        <button class="btn btn-sm btn-success edit-btn" data-id="${row.id}"><i class="fa fa-edit"></i> Edit</button>
-        <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}"><i class="fa fa-trash"></i> Delete</button>
-      `;
-    }
-  }
+              data: null,
+              className: 'text-center',  
+              render: function (data, type, row, meta) {
+                return meta.row + 1;  // Serial number
+              }
+            }, 
+            { data: 'custName' },
+            { data: 'custMobile', className: 'text-center',   },
+            { data: 'custEmail' },
+            { data: 'custAddress' },
+            { data: null,
+              className: 'text-center',
+              orderable: false,
+              searchable: false,
+                      render: function (data, type, row) {
+                      return `
+                        <button class="btn btn-sm btn-success edit-btn" data-id="${row.custId}" onclick="updateCust(${row.custId},${row.custName},${row.custMobile},${row.custEmail},${row.custAddress})"><i class="fa fa-edit"></i> Edit</button>
+                        <button class="btn btn-sm btn-danger delete-btn" data-id="${row.custId}"><i class="fa fa-trash"></i> Delete</button>
+                      `;
+                    } 
+                }
             ]
         });
     });
+
+    function updateCust(custid, upcustName, upcustMobile,upcustEmail,upcustAddress){
+      // console.log('asdf', custid); 
+      $('#updateCustModal').modal('show');
+      $('#upcustid').val(custid);
+      $('#upcustName').val(upcustName);
+      $('#upcustMobile').val(upcustMobile);
+      $('#upcustEmail').val(upcustEmail);
+      $('#upcustAddress').val(upcustAddress);
+      
+
+    }
+
+
+
+      // Submit form to API
+  document.getElementById("UpdtcustomerForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    // Clear all old errors
+    fields.forEach(field => {
+      document.getElementById(field + "Error").textContent = "";
+      document.getElementById(field).classList.remove("error-border");
+    });
+
+    const data = {
+      custId: document.getElementById("upcustid").value,
+      custName: document.getElementById("upcustName").value,
+      custMobile: document.getElementById("upcustMobile").value,
+      custEmail: document.getElementById("upcustEmail").value,
+      custAddress: document.getElementById("upcustAddress").value
+    };
+
+    // Do final front-end check before submitting
+    let hasErrors = false;
+    fields.forEach(field => {
+      const input = document.getElementById(field);
+      const isValid = validateInput(field, input.value);
+      if (!isValid) {
+        hasErrors = true;
+        input.classList.add("error-border");
+        document.getElementById(field + "Error").textContent = getErrorMessage(field);
+      }
+    });
+
+    if (hasErrors) return;
+
+    // Send to API
+    fetch("/api/updtCust", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(errors => { throw errors });
+        }
+        return response.text(); // or response.json()
+      })
+      .then(result => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Customer info updated!',
+          confirmButtonText: 'OK'
+        }).then(() => location.reload());
+      })
+      .catch(errors => {
+        // Server-side validation errors
+        for (const field in errors) {
+          const input = document.getElementById(field);
+          const errorDiv = document.getElementById(field + "Error");
+          input.classList.add("error-border");
+          errorDiv.textContent = errors[field];
+        }
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Form Error!',
+          text: 'Please fix the highlighted fields.',
+          confirmButtonText: 'OK'
+        });
+      });
+  });
+
+
 </script>
 
 </body>
