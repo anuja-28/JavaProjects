@@ -323,7 +323,10 @@ $(document).ready(function () {
               searchable: false,
                       render: function (data, type, row) {
                       return `
-                        <button class="btn btn-sm btn-success edit-btn" data-id="${row.custId}" onclick="updateCust(${row.custId},${row.custName},${row.custMobile},${row.custEmail},${row.custAddress})"><i class="fa fa-edit"></i> Edit</button>
+                         <button class="btn btn-sm btn-success edit-btn"
+                          onclick="updateCust(${row.custId}, '${row.custName}', '${row.custMobile}', '${row.custEmail}', '${row.custAddress}')">
+                          <i class="fa fa-edit"></i> Edit
+                        </button>
                         <button class="btn btn-sm btn-danger delete-btn" data-id="${row.custId}"><i class="fa fa-trash"></i> Delete</button>
                       `;
                     } 
@@ -344,76 +347,81 @@ $(document).ready(function () {
 
     }
 
-
+const updateFields = ["upcustName", "upcustMobile", "upcustEmail", "upcustAddress"];
 
       // Submit form to API
-  document.getElementById("UpdtcustomerForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+ document.getElementById("UpdtcustomerForm").addEventListener("submit", function (e) {
+  e.preventDefault();
 
-    // Clear all old errors
-    fields.forEach(field => {
-      document.getElementById(field + "Error").textContent = "";
-      document.getElementById(field).classList.remove("error-border");
-    });
-
-    const data = {
-      custId: document.getElementById("upcustid").value,
-      custName: document.getElementById("upcustName").value,
-      custMobile: document.getElementById("upcustMobile").value,
-      custEmail: document.getElementById("upcustEmail").value,
-      custAddress: document.getElementById("upcustAddress").value
-    };
-
-    // Do final front-end check before submitting
-    let hasErrors = false;
-    fields.forEach(field => {
-      const input = document.getElementById(field);
-      const isValid = validateInput(field, input.value);
-      if (!isValid) {
-        hasErrors = true;
-        input.classList.add("error-border");
-        document.getElementById(field + "Error").textContent = getErrorMessage(field);
-      }
-    });
-
-    if (hasErrors) return;
-
-    // Send to API
-    fetch("/api/updtCust", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(errors => { throw errors });
-        }
-        return response.text(); // or response.json()
-      })
-      .then(result => {
-        Swal.fire({
-          icon: 'success',
-          title: 'Customer info updated!',
-          confirmButtonText: 'OK'
-        }).then(() => location.reload());
-      })
-      .catch(errors => {
-        // Server-side validation errors
-        for (const field in errors) {
-          const input = document.getElementById(field);
-          const errorDiv = document.getElementById(field + "Error");
-          input.classList.add("error-border");
-          errorDiv.textContent = errors[field];
-        }
-
-        Swal.fire({
-          icon: 'error',
-          title: 'Form Error!',
-          text: 'Please fix the highlighted fields.',
-          confirmButtonText: 'OK'
-        });
-      });
+  // Clear old errors
+  updateFields.forEach(field => {
+    const errorDiv = document.getElementById(field + "Error");
+    console.log(errorDiv);
+    if (errorDiv) errorDiv.textContent = "";
+    const input = document.getElementById(field);
+    if (input) input.classList.remove("error-border");
   });
+
+  // Prepare Data
+  const data = {
+    custId: document.getElementById("upcustid").value,
+    custName: document.getElementById("upcustName").value,
+    custMobile: document.getElementById("upcustMobile").value,
+    custEmail: document.getElementById("upcustEmail").value,
+    custAddress: document.getElementById("upcustAddress").value
+  };
+
+  // Validate inputs
+  let hasErrors = false;
+  updateFields.forEach(field => {
+    const input = document.getElementById(field);
+    const isValid = validateInput(field.replace('up', ''), input.value); // e.g. upcustName → custName
+    if (!isValid) {
+      hasErrors = true;
+      input.classList.add("error-border");
+      const errorDiv = document.getElementById(field + "Error");
+      if (errorDiv) errorDiv.textContent = getErrorMessage(field.replace('up', ''));
+    }
+  });
+
+  if (hasErrors) return;
+
+  // Submit to API
+  fetch("/api/updtCust", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errors => { throw errors });
+      }
+      return response.text(); // or .json()
+    })
+    .then(result => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Customer info updated!',
+        confirmButtonText: 'OK'
+      }).then(() => location.reload());
+    })
+    .catch(errors => {
+      for (const field in errors) {
+        const id = "up" + field.charAt(0).toUpperCase() + field.slice(1); // custName → upcustName
+        const input = document.getElementById(id);
+        const errorDiv = document.getElementById(id + "Error");
+        if (input) input.classList.add("error-border");
+        if (errorDiv) errorDiv.textContent = errors[field];
+      }
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Form Error!',
+        text: 'Please fix the highlighted fields.',
+        confirmButtonText: 'OK'
+      });
+    });
+});
 
 
 </script>

@@ -39,7 +39,7 @@ public Customer getCustomerById(int cust_id){
 @Override
 public int updateCustomer(Customer customer){
   String qry1 = "update tbl_customer_details set cust_name = ? , cust_mobile = ? , cust_email = ? , cust_address = ?  where cust_id = ?";
-  return jdbcTemplate.update(qry1,customer.getCustName(), customer.getCustMobile(),customer.getCustEmail(), customer.getCustAddress());
+  return jdbcTemplate.update(qry1,customer.getCustName(), customer.getCustMobile(),customer.getCustEmail(), customer.getCustAddress(), customer.getCustId());
  
 }
 
