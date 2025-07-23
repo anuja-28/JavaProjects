@@ -118,7 +118,7 @@
             <!-- Modal Body -->
             <div class="modal-body">
                 <form id="UpdtcustomerForm"  class="p-1">
-                    <input id="upcustid" class="form-control" type="text" />
+                    <input  id="upcustid" class="form-control" type="hidden" />
                     <div class="user_input mt-1">
                         <label>Name:</label>
                         <input id="upcustName" class="form-control" type="text" />
@@ -187,7 +187,7 @@
       case "custName":
         return value.length >= 2 && value.length <= 50;
       case "custMobile":
-        return /^\d{10}$/.test(value);
+       return /^[789]\d{9}$/.test(value);
       case "custEmail":
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
       case "custAddress":
@@ -337,6 +337,16 @@ $(document).ready(function () {
 
     function updateCust(custid, upcustName, upcustMobile,upcustEmail,upcustAddress){
       // console.log('asdf', custid); 
+      
+$('#UpdtcustomerForm')[0].reset();
+ // Remove red borders and error messages
+  const updateFields = ["upcustName", "upcustMobile", "upcustEmail", "upcustAddress"];
+  updateFields.forEach(field => {
+    $('#' + field).removeClass('error-border');
+    $('#' + field + 'Error').text('');
+  });
+
+  
       $('#updateCustModal').modal('show');
       $('#upcustid').val(custid);
       $('#upcustName').val(upcustName);
@@ -349,18 +359,36 @@ $(document).ready(function () {
 
 const updateFields = ["upcustName", "upcustMobile", "upcustEmail", "upcustAddress"];
 
+updateFields.forEach(field => {
+  const input = document.getElementById(field);
+  const errorDiv = document.getElementById(field + "Error");
+
+  if (input) {
+    input.addEventListener("input", () => {
+      const isValid = validateInput(field.replace('up', ''), input.value);
+      if (isValid) {
+        input.classList.remove("error-border");
+        if (errorDiv) errorDiv.textContent = "";
+      } else {
+        input.classList.add("error-border");
+        if (errorDiv) errorDiv.textContent = getErrorMessage(field.replace('up', ''));
+      }
+    });
+  }
+});
+
       // Submit form to API
  document.getElementById("UpdtcustomerForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  // Clear old errors
-  updateFields.forEach(field => {
-    const errorDiv = document.getElementById(field + "Error");
-    console.log(errorDiv);
-    if (errorDiv) errorDiv.textContent = "";
-    const input = document.getElementById(field);
-    if (input) input.classList.remove("error-border");
-  });
+
+updateFields.forEach(field => {
+  const input = document.getElementById(field);                // <input> field
+  const errorDiv = document.getElementById(field + "Error");   // <small> error text
+  if (errorDiv) errorDiv.textContent = "";
+  if (input) input.classList.remove("error-border");
+});
+
 
   // Prepare Data
   const data = {
@@ -423,6 +451,19 @@ const updateFields = ["upcustName", "upcustMobile", "upcustEmail", "upcustAddres
     });
 });
 
+
+function resetUpdateForm() {
+  $('#updateCustModal')[0].reset(); // Reset form fields
+
+  // Remove red borders and error messages
+  const updateFields = ["upcustName", "upcustMobile", "upcustEmail", "upcustAddress"];
+  updateFields.forEach(field => {
+    $('#' + field).removeClass('error-border');
+    $('#' + field + 'Error').text('');
+  });
+
+ // $('#upcustid').val(''); // Clear hidden ID field if needed
+}
 
 </script>
 
