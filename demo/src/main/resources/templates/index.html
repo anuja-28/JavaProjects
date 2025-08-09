@@ -34,7 +34,7 @@
 <h1 class="text-center mt-4">Customers</h1>
 
 <!-- <a href="/add" class="btn btn-primary mb-3" style="margin-left: 150px;">Add New User</a> -->
-<button type="button" class="btn btn-success mb-3 mx-5" data-bs-toggle="modal" data-bs-target="#addCustModal">
+<button type="button" class="btn btn-success mb-3 mx-5" data-bs-toggle="modal" data-bs-target="#addCustModal" onclick="resetAddForm()">
     Add Customer
 </button>
 <!-- <a href="/products_page" class="btn btn-info mb-3">Products</a> -->
@@ -63,7 +63,7 @@
             <!-- Modal Header -->
             <div class="modal-header">
                 <h4 class="modal-title">Add Customer</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" ></button>
             </div>
 
             <!-- Modal Body -->
@@ -298,6 +298,14 @@
   });
 
 
+$('#customerForm')[0].reset();
+ // Remove red borders and error messages
+  const addFields = ["custName", "custMobile", "custEmail", "custAddress"];
+  addFields.forEach(field => {
+    $('#' + field).removeClass('error-border');
+    $('#' + field + 'Error').text('');
+  }); 
+
 $(document).ready(function () {
         $('#ajaxTable').DataTable({
             ajax: {
@@ -452,8 +460,23 @@ updateFields.forEach(field => {
 });
 
 
+function resetAddForm() {
+  $('#customerForm')[0].reset(); // Reset form fields
+
+  // Remove red borders and error messages
+  const addFields = ["custName", "custMobile", "custEmail", "custAddress"];
+  addFields.forEach(field => {
+    $('#' + field).removeClass('error-border');
+    $('#' + field + 'Error').text('');
+  });
+
+ // $('#upcustid').val(''); // Clear hidden ID field if needed
+}
+
+
+
 function resetUpdateForm() {
-  $('#updateCustModal')[0].reset(); // Reset form fields
+  $('#addCustModal')[0].reset(); // Reset form fields
 
   // Remove red borders and error messages
   const updateFields = ["upcustName", "upcustMobile", "upcustEmail", "upcustAddress"];
