@@ -37,6 +37,10 @@
 <button type="button" class="btn btn-success mb-3 mx-5" data-bs-toggle="modal" data-bs-target="#addCustModal" onclick="resetAddForm()">
     Add Customer
 </button>
+
+<button type="button" class="btn btn-primary mb-3 mx-5" data-bs-toggle="modal" data-bs-target="#addExpenseModal" onclick="resetAddForm()">
+    Expense
+</button>
 <!-- <a href="/products_page" class="btn btn-info mb-3">Products</a> -->
 <!-- 
 <table border="1" class="table-bordered" style="border-collapse: collapse; width: 80%; margin: auto;">
@@ -55,7 +59,7 @@
 </table> -->
 
 
-<!-- Add Modal -->
+<!-- Add customer Modal -->
 <div class="modal fade" id="addCustModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -73,7 +77,7 @@
                         <label>Name:</label>
                         <input id="custName" class="form-control" type="text" />
                         <small class="error" id="custNameError"></small><br/>
-                        
+                 
                     </div>
                     <div class="user_input mt-1">
                         <label>Email:</label>
@@ -155,6 +159,71 @@
 
 
 <br>
+
+
+
+<!-- Add Transaction Modal -->
+<div class="modal fade" id="addExpenseModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Add Transaction</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form id="transactionForm" class="p-1">
+
+                    <div class="user_input mt-1">
+                        <label>User ID:</label>
+                        <input id="userId" name="userId" class="form-control" type="number" required />
+                        <small class="error" id="userIdError"></small><br/>
+                    </div>
+
+                    <div class="user_input mt-1">
+                        <label>Amount:</label>
+                        <input id="amount" name="amount" class="form-control" type="number" step="0.01" required />
+                        <small class="error" id="amountError"></small><br/>
+                    </div>
+
+                    <div class="user_input mt-1">
+                        <label>Transaction Type:</label>
+                        <select id="txnType" name="txnType" class="form-control" required>
+                            <option value="">-- Select --</option>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                        <small class="error" id="txnTypeError"></small><br/>
+                    </div>
+
+                    <div class="user_input mt-1">
+                        <label>Category:</label>
+                        <input id="category" name="category" class="form-control" type="text" required />
+                        <small class="error" id="categoryError"></small><br/>
+                    </div>
+
+                    <div class="user_input mt-1">
+                        <label>Description:</label>
+                        <textarea id="description" name="description" class="form-control"></textarea>
+                        <small class="error" id="descriptionError"></small><br/>
+                    </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Save</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 <div class="container p-2  rounded">
 <table id="ajaxTable" class="table border table-bordered mt-3" >
     <thead>
@@ -487,6 +556,101 @@ function resetUpdateForm() {
 
  // $('#upcustid').val(''); // Clear hidden ID field if needed
 }
+
+// function codeHasBug(){
+
+//   var code = 'bug';
+
+//   if(codeHas === 'bug'){
+//     console.log('Bug Fixed!!!');
+//   } else{
+//     console.log('no more bugging');
+//   }
+// }
+
+
+
+
+
+
+  // Submit form to API
+  document.getElementById("transactionForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    // Clear all old errors
+    fields.forEach(field => {
+      document.getElementById(field + "Error").textContent = "";
+      document.getElementById(field).classList.remove("error-border");
+    });
+
+    const data = {
+      amount: document.getElementById("amount").value,
+      txnId: document.getElementById("txnType").value,
+      custEmail: document.getElementById("category").value,
+      custAddress: document.getElementById("description").value
+    };
+
+    // Do final front-end check before submitting
+    let hasErrors = false;
+    fields.forEach(field => {
+      const input = document.getElementById(field);
+      const isValid = validateInput(field, input.value);
+      if (!isValid) {
+        hasErrors = true;
+        input.classList.add("error-border");
+        document.getElementById(field + "Error").textContent = getErrorMessage(field);
+      }
+    });
+
+    if (hasErrors) return;
+
+    // Send to API
+    fetch("/api/saveTxn", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(errors => { throw errors });
+        }
+        return response.text(); // or response.json()
+      })
+      .then(result => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Transaction Saved!',
+          confirmButtonText: 'OK'
+        }).then(() => location.reload());
+      })
+      .catch(errors => {
+        // Server-side validation errors
+        for (const field in errors) {
+          const input = document.getElementById(field);
+          const errorDiv = document.getElementById(field + "Error");
+          input.classList.add("error-border");
+          errorDiv.textContent = errors[field];
+        }
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Form Error!',
+          text: 'Please fix the highlighted fields.',
+          confirmButtonText: 'OK'
+        });
+      });
+  });
+
+
+$('#transactionForm')[0].reset();
+ // Remove red borders and error messages
+  const addFields2 = ["amount", "txnType", "category", "description"];
+  addFields2.forEach(field => {
+    $('#' + field).removeClass('error-border');
+    $('#' + field + 'Error').text('');
+  }); 
+
+
 
 </script>
 

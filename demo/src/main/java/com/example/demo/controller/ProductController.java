@@ -32,7 +32,7 @@ public class ProductController {
  }
  
  @GetMapping("/product/{pr_id}")
- public Product getProductById(@PathVariable("pr_id") int pr_id) {
+ public Product getProductById(@PathVariable int pr_id) {
   return productJdbcRepository.getProductById(pr_id);
  }
  
@@ -42,7 +42,7 @@ public class ProductController {
  }
  
  @DeleteMapping("/delete_product/{pr_id}")
- public int deleteProductById(@PathVariable("pr_id") int pr_id) {
+ public int deleteProductById(@PathVariable int pr_id) {
   return productJdbcRepository.deleteProductById(pr_id);
  }
 
