@@ -12,8 +12,6 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class ViewPageController {
 
- 
-
         @GetMapping("/products_page")
     public String product_page(Model model) {
         model.addAttribute("Product", new Product()); // <-- important line
